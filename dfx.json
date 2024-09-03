@@ -1,0 +1,26 @@
+{
+  "canisters": {
+    "point-poc-backend": {
+      "main": "src/point-poc-backend/main.mo",
+      "type": "motoko"
+    },
+    "point-poc-frontend": {
+      "dependencies": [
+        "point-poc-backend"
+      ],
+      "source": [
+        "src/point-poc-frontend/dist"
+      ],
+      "type": "assets",
+      "workspace": "point-poc-frontend"
+    }
+  },
+  "defaults": {
+    "build": {
+      "args": "",
+      "packtool": ""
+    }
+  },
+  "output_env_file": ".env",
+  "version": 1
+}
