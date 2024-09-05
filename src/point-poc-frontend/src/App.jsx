@@ -1,8 +1,8 @@
-import { useState } from 'react';
-import { point_poc_backend } from 'declarations/point-poc-backend';
+import { useState } from "react";
+import { point_poc_backend } from "declarations/point-poc-backend";
 
 function App() {
-  const [greeting, setGreeting] = useState('');
+  const [greeting, setGreeting] = useState("");
 
   function handleSubmit(event) {
     event.preventDefault();
@@ -15,7 +15,6 @@ function App() {
 
   return (
     <main>
-      <img src="/logo2.svg" alt="DFINITY logo" />
       <br />
       <br />
       <form action="#" onSubmit={handleSubmit}>
