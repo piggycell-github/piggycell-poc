@@ -7,11 +7,35 @@ actor PointSystem {
   private var pointBalances = HashMap.HashMap<Text, Nat>(0, Text.equal, Text.hash);
 
   public shared(msg) func mint(userId : Text, amount : Nat) : async Result.Result<(), Text> {
+    let currentBalance = pointBalances.get(userId);
+
+    switch (currentBalance) {
+      case (?balance) {
+        pointBalances.put(userId, balance + amount);
+      };
+      case null {
+        pointBalances.put(userId, amount);
+      };
+    };
+
     #ok(())
   };
 
   public shared(msg) func burn(userId : Text, amount : Nat) : async Result.Result<(), Text> {
-    #ok(())
+    let currentBalance = pointBalances.get(userId);
+        switch (currentBalance) {
+            case (null) {
+                #err("User does not have any points")
+            };
+            case (?balance) {
+                if (balance < amount) {
+                    #err("Insufficient points")
+                } else {
+                    pointBalances.put(userId, balance - amount);
+                    #ok(())
+                };
+            };
+        }
   };
 
   public query func balanceOf(userId : Text) : async Nat {
