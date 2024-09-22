@@ -2,9 +2,12 @@ import HashMap "mo:base/HashMap";
 import Result "mo:base/Result";
 import Text "mo:base/Text";
 import Iter "mo:base/Iter";
+import Principal "mo:base/Principal";
+
 actor PointSystem {
   private stable var points : [(Text, Nat)] = [];
   private var pointBalances = HashMap.HashMap<Text, Nat>(0, Text.equal, Text.hash);
+  private stable var owner : Principal = Principal.fromText("pnmc4-h5fuj-6xi3a-zaw7g-5lzp3-5rxwq-5fbid-mvapc-zaow4-rsj7m-eae");
 
   public shared(msg) func mint(userId : Text, amount : Nat) : async Result.Result<(), Text> {
     let currentBalance = pointBalances.get(userId);
