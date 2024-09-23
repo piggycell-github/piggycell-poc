@@ -68,6 +68,10 @@ actor PointSystem {
     #ok(())
   };
 
+  public query func getOwner() : async Principal {
+    owner
+  };
+
   system func preupgrade() {
     points := Iter.toArray(pointBalances.entries());
   };
