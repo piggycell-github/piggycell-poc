@@ -6,6 +6,8 @@ import {
 } from "declarations/point-poc-backend";
 import { AuthClient } from "@dfinity/auth-client";
 import { Secp256k1KeyIdentity } from "@dfinity/identity-secp256k1";
+import Web3Modal from "web3modal";
+import { ethers } from "ethers";
 
 const userPem = `-----BEGIN EC PRIVATE KEY-----
 MHQCAQEEID8yHjF4If/Ko3tq+InD+/AVlziklNZnlF/CZ5vGtSwloAcGBSuBBAAK
@@ -29,6 +31,11 @@ function App() {
   const [authClient, setAuthClient] = useState(null);
   const [backendInstance, setBackendInstance] = useState(point_poc_backend);
   const [principal, setPrincipal] = useState(null);
+
+  const [provider, setProvider] = useState(null);
+  const [account, setAccount] = useState(null);
+
+  const [signature, setSignature] = useState("");
 
   useEffect(() => {
     initAuth();
@@ -174,6 +181,33 @@ function App() {
     }
   };
 
+  const connectWallet = async () => {
+    try {
+      // Web3Modal 인스턴스 생성
+      const web3Modal = new Web3Modal({
+        network: "mainnet", // 연결할 네트워크를 지정합니다.
+        cacheProvider: true, // 이전에 사용한 지갑을 캐시합니다.
+      });
+
+      // 지갑 연결
+      const instance = await web3Modal.connect();
+
+      // ethers 프로바이더 생성
+      const provider = new ethers.providers.Web3Provider(instance);
+
+      setProvider(provider);
+
+      // 계정 설정
+      const signer = await provider.getSigner();
+      const address = await signer.getAddress();
+      setAccount(address);
+
+      console.log("지갑이 연결되었습니다:", address);
+    } catch (error) {
+      console.error("지갑 연결에 실패했습니다:", error);
+    }
+  };
+
   return (
     <div className="flex flex-col justify-center min-h-screen py-6 bg-gray-100 sm:py-12">
       <div className="relative py-3 sm:max-w-xl sm:mx-auto">
@@ -184,6 +218,19 @@ function App() {
               <h1 className="mb-6 text-2xl font-semibold text-center">
                 ICP Point System
               </h1>
+
+              {!!account ? (
+                <div className="text-sm text-center text-gray-500">
+                  <p>Connected to {account}</p>
+                </div>
+              ) : (
+                <button
+                  onClick={connectWallet}
+                  className="flex justify-center w-full px-4 py-2 text-sm font-medium text-white bg-indigo-600 border border-transparent rounded-md shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                >
+                  Connect Wallet
+                </button>
+              )}
 
               {/** principal */}
               {principal && (
