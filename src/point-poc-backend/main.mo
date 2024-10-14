@@ -6,6 +6,8 @@ import Principal "mo:base/Principal";
 import Nat "mo:base/Nat";
 import HU "utils/HashUtils";
 import DefaultContext "consts/DefaultContext";
+import AU "utils/ArrayUtils";
+import Helper "utils/Helper";
 
 actor PointSystem {
   private var burnNonces = HashMap.HashMap<Text, Nat>(0, Text.equal, Text.hash);
