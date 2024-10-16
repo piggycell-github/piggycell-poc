@@ -42,6 +42,14 @@ function App() {
     initAuth();
   }, []);
 
+  // useEffect(() => {
+  //   setUserId(account);
+  // }, [account, isAuthenticated, principal]);
+
+  // useEffect(() => {
+  //   setSignature("");
+  // }, [userId, amount]);
+
   useEffect(() => {
     if (backendInstance && authClient) {
       backendInstance.getOwner().then((owner) => {
@@ -84,7 +92,6 @@ function App() {
     if (authClient) {
       await new Promise((resolve) => {
         authClient.login({
-          identityProvider: `http://${process.env.CANISTER_ID_INTERNET_IDENTITY}.localhost:4943/`,
           onSuccess: resolve,
         });
       });
