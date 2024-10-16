@@ -33,9 +33,10 @@ function App() {
   const [principal, setPrincipal] = useState(null);
 
   const [provider, setProvider] = useState(null);
-  const [account, setAccount] = useState(null);
 
   const [signature, setSignature] = useState("");
+
+  const [account, setAccount] = useState(null);
 
   useEffect(() => {
     initAuth();
@@ -169,7 +170,11 @@ function App() {
     e.preventDefault();
     resetData();
     try {
-      const result = await backendInstance.burn(userId, BigInt(amount));
+      const result = await backendInstance.burn(
+        userId,
+        BigInt(amount),
+        signature
+      );
       if ("ok" in result) {
         setMessage(`Successfully burned ${amount} points from ${userId}`);
         setAmount("");
@@ -206,6 +211,30 @@ function App() {
     } catch (error) {
       console.error("지갑 연결에 실패했습니다:", error);
     }
+  };
+
+  const handleSignMessage = async () => {
+    if (!provider || !account) {
+      console.error("지갑이 연결되지 않았습니다.");
+      return;
+    }
+
+    const signer = await provider.getSigner();
+
+    const nonce = await point_poc_backend.getBurnNonce(userId);
+    const message = await point_poc_backend.makeMessage(
+      userId,
+      BigInt(amount),
+      nonce
+    );
+
+    const signature = await signer.signMessage(message);
+    const hashedMessage = ethers.utils.hashMessage(message);
+
+    console.log("서명:", signature.slice(2, -2));
+    console.log("메세지 해시:", hashedMessage.slice(2));
+
+    setSignature(signature.slice(2, -2));
   };
 
   return (
@@ -317,7 +346,7 @@ function App() {
                         Mint
                       </button>
                     </form>
-                    <form onSubmit={handleBurn} className="space-y-4">
+                    <div className="space-y-4">
                       <input
                         type="text"
                         value={userId}
@@ -334,13 +363,23 @@ function App() {
                         required
                         className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
                       />
-                      <button
-                        type="submit"
-                        className="flex justify-center w-full px-4 py-2 text-sm font-medium text-white bg-red-600 border border-transparent rounded-md shadow-sm hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
-                      >
-                        Burn
-                      </button>
-                    </form>
+                      {!signature ? (
+                        <button
+                          onClick={handleSignMessage}
+                          className="flex justify-center w-full px-4 py-2 text-sm font-medium text-white bg-red-600 border border-transparent rounded-md shadow-sm hover:bg-yellow-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-500"
+                        >
+                          Sign Message
+                        </button>
+                      ) : (
+                        <button
+                          type="submit"
+                          onClick={handleBurn}
+                          className="flex justify-center w-full px-4 py-2 text-sm font-medium text-white bg-red-600 border border-transparent rounded-md shadow-sm hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
+                        >
+                          Burn
+                        </button>
+                      )}
+                    </div>
                   </div>
                 )}
               </div>

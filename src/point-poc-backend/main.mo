@@ -97,9 +97,9 @@ actor PointSystem {
   public query func getBurnNonce(_address : Text) : async Nat {
     let address = Text.toLowercase(_address);
     switch (burnNonces.get(address)) {
+      case (?nonce) { nonce + 1 };
       case (null) { 0 };
-      case (?nonce) { nonce };
-    }
+    };
   };
 
   public shared(msg) func setOwner(newOwner : Principal) : async Result.Result<(), Text> {
