@@ -42,13 +42,13 @@ function App() {
     initAuth();
   }, []);
 
-  // useEffect(() => {
-  //   setUserId(account);
-  // }, [account, isAuthenticated, principal]);
+  useEffect(() => {
+    setUserId(account);
+  }, [account, isAuthenticated, principal]);
 
-  // useEffect(() => {
-  //   setSignature("");
-  // }, [userId, amount]);
+  useEffect(() => {
+    setSignature("");
+  }, [userId, amount]);
 
   useEffect(() => {
     if (backendInstance && authClient) {
