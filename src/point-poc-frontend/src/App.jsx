@@ -56,10 +56,12 @@ function App() {
         const principal = authClient.getIdentity().getPrincipal();
         console.log("Authenticated as", principal.toText());
         console.log("Owner is", owner.toText());
-        setIsAdmin(principal.toText() === owner.toText());
+        setIsAdmin(
+          principal.toText().toLowerCase() === owner.toText().toLowerCase()
+        );
       });
     } else {
-      setIsAdmin(false);
+      if (!isAdmin) setIsAdmin(false);
     }
   }, [authClient, backendInstance]);
 
@@ -390,14 +392,27 @@ function App() {
                   </div>
                 )}
               </div>
-              <div className="pt-6 text-base font-bold leading-6 sm:text-lg sm:leading-7">
+              <div className="pt-6 text-base font-bold leading-6 sm:text-lg sm:leading-7 flex flex-col items-center">
                 {balance !== null && (
                   <p className="text-center">Current Balance: {balance}</p>
                 )}
                 {message && (
-                  <p className="mt-2 text-sm text-center text-gray-600">
-                    {message}
-                  </p>
+                  <>
+                    <p className="mt-2 text-sm text-center text-gray-600">
+                      {message}
+                    </p>
+                    {(message.includes("Successfully") ||
+                      message.includes("Balance for")) && (
+                      <a
+                        href={`https://dashboard.internetcomputer.org/canister/${process.env.CANISTER_ID_POINT_POC_BACKEND}#balanceOf`}
+                        className="text-indigo-600 hover:text-indigo-800 hover:underline transition-colors duration-200"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        Go to Canister Dashboard
+                      </a>
+                    )}
+                  </>
                 )}
               </div>
             </div>
