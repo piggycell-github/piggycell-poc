@@ -21,6 +21,11 @@ oUQDQgAE6BJAH55JTbnx9Uz8YAZaF1Af1qdgEb2Y8Vcso8rMRG5/56T4sJdFjmYE
 42xEhBi4HZlkP/3fd8hOLtw27qBOGw==
 -----END EC PRIVATE KEY-----`;
 
+const WEB3_MODAL_CONFIG = {
+  network: "mainnet",
+  cacheProvider: true,
+};
+
 function App() {
   const [userId, setUserId] = useState("");
   const [amount, setAmount] = useState("");
@@ -197,11 +202,7 @@ function App() {
 
   const connectWallet = async () => {
     try {
-      // Web3Modal 인스턴스 생성
-      const web3Modal = new Web3Modal({
-        network: "mainnet", // 연결할 네트워크를 지정합니다.
-        cacheProvider: true, // 이전에 사용한 지갑을 캐시합니다.
-      });
+      const web3Modal = new Web3Modal(WEB3_MODAL_CONFIG);
 
       // 지갑 연결
       const instance = await web3Modal.connect();
